@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <title>{% block title %}DjangoX{% endblock title %}</title>
+    <meta name="description" content="A framework for launching new Django projects quickly.">
+    <meta name="author" content="">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+
+    {% block css %}
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% endblock %}
+</head>
+
+<body>
+    <div class="hero-section">
+        <div class="">
+            <!-- Navbar -->
+            <header class="p-3">
+                <div class="container">
+                    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                        <a href="/" class="d-flex align-items-center mb-lg-0 text-dark text-decoration-none">
+                            <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
+                                <use xlink:href="#bootstrap" />
+                            </svg>
+                        </a>
+
+                        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                            <li><a href="{% url 'home' %}" class="nav-link px-2 link-secondary">Home</a></li>
+                            <li><a href="{% url 'about' %}" class="nav-link px-2 link-dark">About</a></li>
+                        </ul>
+
+                        <div class="dropdown text-end">
+                            {% if user.is_authenticated %}
+                            <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ user.email }}
+                            </a>
+                            <ul class="dropdown-menu text-small">
+                                <li><a class="dropdown-item" href="{% url 'account_change_password' %}">Change
+                                        password</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign out</a></li>
+                            </ul>
+                            {% else %}
+                            <form class="form-inline ml-auto">
+                                <a href="{% url 'account_login' %}" class="btn btn-outline-secondary">Log in</a>
+                                <a href="{% url 'account_signup' %}" class="btn btn-primary ml-2">Sign up</a>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="position-absolute text-center text-white w-100" style="padding: 50px;">
+            <h1>Try Our AI Artwork Generator for Free</h1>
+            <p class="py-5">From logos and characters to digital artwork and photos,
+                just describe the image you want and our AI image generating
+                tool will create the perfect graphic for your project.
+                It's FREE to try.
+            </p>
+            <h5 class="mb-5">Try aiGen for free by entering a prompt below</h5>
+
+            <div class="d-flex flex-column gap-4">
+                <form method="post" id="promptForm">
+                    {% csrf_token %}
+                    {{ form.prompt }}
+                    <div class="mt-3">
+                        <button class="btn btn-lg btn-primary" type="submit" id="generate">
+                            <span class="" role="status" aria-hidden="true"></span>
+                            Generate
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Image gallery -->
+    <div class="container text-white mb-sm-4">
+        <h1 class="mb-5 text-center">Generate awesome looking images with cutting edge AI... Too good to be true.</h1>
+        <div class="row">
+            <div class="col-lg-4 col-md-12 mb-4 mb-lg-0">
+                <img src="{% static '/images/image1.jpg' %}" class="w-100 shadow-1-strong rounded mb-4"
+                    alt="Boat on Calm Water" />
+
+                <img src="{% static '/images/image0.jpg' %}" class="w-100 shadow-1-strong rounded mb-4"
+                    alt="Wintry Mountain Landscape" />
+            </div>
+            <div class="col-lg-4 col-md-12 mb-4 mb-lg-0">
+                <img src="{% static '/images/image3.jpg' %}" class="w-100 shadow-1-strong rounded mb-4"
+                    alt="Boat on Calm Water" />
+
+                <img src="{% static '/images/image4.jpg' %}" class="w-100 shadow-1-strong rounded mb-4"
+                    alt="Wintry Mountain Landscape" />
+            </div>
+            <div class="col-lg-4 col-md-12 mb-4 mb-lg-0">
+                <img src="{% static '/images/image5.jpg' %}" class="w-100 shadow-1-strong rounded mb-4"
+                    alt="Boat on Calm Water" />
+
+                <img src="{% static '/images/image2.jpg' %}" class="w-100 shadow-1-strong rounded mb-4"
+                    alt="Wintry Mountain Landscape" />
+            </div>
+        </div>
+    </div>
+
+    <div>
+        {% block content %}
+        {% endblock content %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-white text-center py-3" style="background-color: #0e1a1f;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p>&copy; aiGen2023. All Rights Reserved.</p>
+                </div>
+                <div class="col-md-6">
+                    <ul class="list-inline text-md-right">
+                        <li class="list-inline-item"><a href="#">Terms of Service</a></li>
+                        <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+                        <li class="list-inline-item"><a href="#">How to Prompt</a></li>
+                        <li class="list-inline-item"><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    {% block javascript %}
+
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+
+    <!-- Project JS -->
+    <script type="module" src="{% static 'js/base.js' %}"></script>
+    {% endblock javascript %}
+
+</body>
+
+</html>

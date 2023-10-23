@@ -4,13 +4,21 @@
 {% block title %}Home page{% endblock title %}
 
 {% block content %}
-<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
 
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+  <div class="img-fluid" id="image-container">
+    <img src="https://pbxt.replicate.delivery/NlZVSdQ1go5pBtF5MaJEPqkNqMaFzabtqexdZ1Zax8hNRF4IA/out-0.png" alt="">
+  </div>
   <br>
   <form method="post" id="promptForm">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" id="generate">Submit</button>
+    {{ form.prompt }}
+    <!-- <button type="submit" id="generate" class="btn btn-primary loading">Submit</button> -->
+
+    <button class="btn btn-primary" type="submit" id="generate">
+      <span class="" role="status" aria-hidden="true"></span>
+      Generate
+    </button>
   </form>
 
 </div>
@@ -49,22 +57,45 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     const promptInput = document.getElementById("id_prompt")
+    const generateBtn = document.getElementById("generate")
     const promptForm = document.getElementById("promptForm")
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const spinner = document.querySelector('span[role="status"]')
 
-    console.log(promptForm)
+
 
     promptForm.addEventListener("submit", async (e) => {
       e.preventDefault()
+      // set spinner to loading and disable button
+
+      spinner.classList = "spinner-grow spinner-grow-sm"
+      generateBtn.disabled = true
 
       const formData = new FormData(promptForm)
-
       formData.set("csrfmiddlewaretoken", csrfToken)
 
       console.log(Object.fromEntries(formData));
       const res = await useFetch("http://localhost:8000/test/", formData, csrfToken)
 
       console.log("Res", res)
+
+      // Update the DOM with a new image el
+
+      const newImage = document.createElement("img");
+
+      // Set the src and alt attributes for the new image
+      newImage.src = res.prompt_image;
+      newImage.alt = formData.prompt;
+
+      // Get the div with the id "image-container"
+      const imageContainer = document.getElementById("image-container");
+
+      // Append the new image to the div
+      imageContainer.appendChild(newImage);
+
+      // Remove spinner from span and enable button
+      spinner.classList = ""
+      generateBtn.disabled = false
 
     })
   });

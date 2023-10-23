@@ -10,18 +10,16 @@ from django.views.decorators.http import require_POST
 @require_POST
 def test(request):
 
-    req = request.POST
-    print("prompt", request.body)
-
     data = json.loads(request.body)
-    print("The prompt:",  data.get("prompt"))
-    # output = replicate.run(
-    #     "stability-ai/stable-diffusion:ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4",
-    #     input={"prompt": "a vision of paradise. unreal engine"}
-    # )
-    # print(output)
+    prompt = data.get("prompt")
+
+    output = replicate.run(
+        "stability-ai/stable-diffusion:ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4",
+        input={"prompt": prompt}
+    )
+    img_url = output[0]
     json_data = json.dumps(
-        {"data": True, "prompt": data.get("prompt")})
+        {"status": True, "prompt_image": img_url})
 
     response = HttpResponse(json_data, content_type='application/json')
 
@@ -43,7 +41,7 @@ def index(request):
     else:
         form = PromptForm()
 
-    return render(request, 'pages/home.html', {'form': form})
+    return render(request, 'pages/landing.html', {'form': form})
 
 
 class AboutPageView(TemplateView):
